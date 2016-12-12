@@ -145,8 +145,10 @@
             // 
             // serialPort1
             // 
-            this.serialPort1.BaudRate = 250000;
+            this.serialPort1.BaudRate = 150000;
             this.serialPort1.PortName = "COM4";
+            this.serialPort1.ReadBufferSize = 8192;
+            this.serialPort1.ReceivedBytesThreshold = 15;
             this.serialPort1.DataReceived += new System.IO.Ports.SerialDataReceivedEventHandler(this.serialPort1_DataReceived);
             // 
             // comboBoxCOMS

@@ -74,8 +74,8 @@ namespace accelview_classes
 
         //FFT結果
         //List<double> FFTaccel = new List<double>();
-        DFT fft = new DFT(fft_num, DFT.Window.Hanning);
-        //DFT fft = new DFT(fft_num, DFT.Window.NoWindow);
+        //DFT fft = new DFT(fft_num, DFT.Window.Hanning);
+        DFT fft = new DFT(fft_num, DFT.Window.NoWindow);
         FFTresult fftresult;
 
         //学習用inputとoutput

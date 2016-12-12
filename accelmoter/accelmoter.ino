@@ -18,7 +18,7 @@ int tmp = ST;
 
 void setup()
 {
-  Serial.begin(250000);
+  Serial.begin(150000);
   pinMode(moterPin, OUTPUT);
 
   Timer1.initialize();
