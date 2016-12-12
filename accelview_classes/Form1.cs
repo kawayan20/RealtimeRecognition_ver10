@@ -102,6 +102,7 @@ namespace accelview_classes
         #region メソッド
         public Form1()
         {
+            //hello git
             InitializeComponent();
         }
         #region 初期化処理
