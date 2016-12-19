@@ -198,7 +198,7 @@ namespace accelview_classes
             colors = new Color[] { Color.YellowGreen, Color.DarkTurquoise, Color.PowderBlue, Color.Orange, Color.LightSeaGreen, Color.Turquoise };
 
             mytimer.Elapsed += new ElapsedEventHandler(OnElapsed_TimersTimer);
-            mytimer.Interval = 50;
+            mytimer.Interval = 100;
 
             ////描画のちらつき防止
             //ダブルバッファ（あんまり効果わからん）
@@ -556,7 +556,7 @@ namespace accelview_classes
 
             if (fftresult != null)
             {
-                for (int i = 5; i < fftresult.Length; i++)
+                for (int i = 5; i < fftresult.Length - 1; i++)
                 {
                     if (i > 62 && i < 512)
                     {
@@ -566,9 +566,10 @@ namespace accelview_classes
                     {
                         Fpen = pensfft;
                     }
-                    int fft_preY = AdjustY_ftt((int)fftresult.GetData(i - 1).data.Abs, h, ratio);
-                    int fft_Y = AdjustY_ftt((int)fftresult.GetData(i).data.Abs, h, ratio);
+                    int fft_preY = AdjustY_ftt((int)((fftresult.GetData(i - 2).data.Abs+ fftresult.GetData(i - 1).data.Abs+fftresult.GetData(i).data.Abs)/3), h, ratio);
+                    int fft_Y = AdjustY_ftt((int)((fftresult.GetData(i - 1).data.Abs + fftresult.GetData(i).data.Abs + fftresult.GetData(i+1).data.Abs) / 3), h, ratio);
                     g.DrawLine(Fpen, new Point((i - 1) * w / fftresult.Length, fft_preY), new Point(i * w / fftresult.Length, fft_Y));
+                    //(fftresult.GetData(i - 1).data.Abs + fftresult.GetData(i).data.Abs + fftresult.GetData(i + 1).data.Abs) / 3;
                 }
             }
         }
@@ -1050,7 +1051,6 @@ namespace accelview_classes
                 writer1.Close();
             }
         }
-
 
     }
         

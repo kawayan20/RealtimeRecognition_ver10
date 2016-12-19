@@ -4,7 +4,7 @@
 #define AX 0
 #define AY 1
 #define AZ 2
-#define ST 102
+#define ST 108
 #define FI 255
 #define PWM_DERAY 40
 
@@ -22,7 +22,7 @@ void setup()
   pinMode(moterPin, OUTPUT);
 
   Timer1.initialize();
-  Timer1.attachInterrupt(accelread, 2001);
+  Timer1.attachInterrupt(accelread, 2000);
 }
 
 void mywrite(short src) {
