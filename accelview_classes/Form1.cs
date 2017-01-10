@@ -214,7 +214,7 @@ namespace accelview_classes
             pensff2t = new Pen(new SolidBrush(colors[3]), 3);
 
             mytimer.Elapsed += new ElapsedEventHandler(OnElapsed_TimersTimer);
-            mytimer.Interval = 50;
+            mytimer.Interval = 100;
 
             ////描画のちらつき防止
             //ダブルバッファ
@@ -1081,7 +1081,7 @@ namespace accelview_classes
             {
                 Encoding enc = Encoding.GetEncoding("Shift_JIS");
                 StreamWriter writer1 = new StreamWriter(saveFileDialog1.FileName, true, enc);
-                writer1.Write("{0},{1},{2},{3},{4},{5},{6}, {7},{8},{9},{10},{11},{12},{13}, {14}, {15}, {16},{17},{18}, {19}, {20}, {21}",
+                writer1.Write("{0},{1},{2},{3},{4},{5},{6}, {7},{8},{9},{10},{11},{12},{13}, {14}, {15}, {16},{17},{18}, {19}, {20}, {21}, {22}",
 
               featX[0], featX[1], featX[2], featX[3], featX[4], featX[5], featX[6], featX[7], featX[8], featX[9], featX[10], featX[11], featX[12], featX[13], featX[14], featX[15], featX[16], featX[17], featX[18], featX[19], featX[20], featX[21], featX[22]);
 
