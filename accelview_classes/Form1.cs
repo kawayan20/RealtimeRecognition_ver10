@@ -98,6 +98,11 @@ namespace accelview_classes
         byte[] stopmessage = new byte[3];
 
 
+        Pen Fpen;
+        Pen pensfft;
+        Pen pensff2t;
+
+
         #endregion
         #region メソッド
         public Form1()
@@ -144,6 +149,8 @@ namespace accelview_classes
             stopmessage[1] = 66;
             stopmessage[2] = 67;
 
+
+
             //for (int i = 0; i < fft_num; i++)
             //{
             //    Accel.Add(0);
@@ -178,7 +185,11 @@ namespace accelview_classes
             }
 
             //COMが1個以上あれば1番目を選択状態にしておく
-            if (comboBoxCOMS.Items.Count > 0)
+            if (comboBoxCOMS.Items.Count > 0 && comboBoxCOMS.Items.Count < 3)
+            {
+                comboBoxCOMS.SelectedIndex = 0;
+            }
+            else if(comboBoxCOMS.Items.Count >= 3)
             {
                 comboBoxCOMS.SelectedIndex = 2;
             }
@@ -197,11 +208,16 @@ namespace accelview_classes
             //-----------------------------------------
             colors = new Color[] { Color.YellowGreen, Color.DarkTurquoise, Color.PowderBlue, Color.Orange, Color.LightSeaGreen, Color.Turquoise };
 
+            //描画用ペン
+            Fpen = new Pen(new SolidBrush(colors[5]), 2);
+            pensfft = new Pen(new SolidBrush(colors[5]), 3);
+            pensff2t = new Pen(new SolidBrush(colors[3]), 3);
+
             mytimer.Elapsed += new ElapsedEventHandler(OnElapsed_TimersTimer);
-            mytimer.Interval = 100;
+            mytimer.Interval = 50;
 
             ////描画のちらつき防止
-            //ダブルバッファ（あんまり効果わからん）
+            //ダブルバッファ
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             this.SetStyle(ControlStyles.UserPaint, true);
             this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
@@ -296,14 +312,14 @@ namespace accelview_classes
                 serialPort1.BaudRate = 115200;
             }
 
-            mystart();
+            Mystart();
             mytimer.Start();
 
             serialPort1.Write(stopmessage, 1, 2);
             labelConnect.Text = "Connected";
         }
 
-        private void buttonStop_Click(object sender, EventArgs e)
+        private void ButtonStop_Click(object sender, EventArgs e)
         {
             if (serialPort1.IsOpen)
             {
@@ -334,9 +350,7 @@ namespace accelview_classes
         private void DrawGraphs2(Graphics g, int ratio)
         {
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-            Pen Fpen = new Pen(new SolidBrush(colors[5]), 2);
-            Pen pensfft = new Pen(new SolidBrush(colors[5]), 3);
-            Pen pensff2t = new Pen(new SolidBrush(colors[3]), 3);
+
 
             int w = pictureBox2.Width;
             int h = pictureBox2.Height;
@@ -347,6 +361,11 @@ namespace accelview_classes
             {
                 //double[] featX = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
                 double[] testdata = new double[23];
+                for (int i = 0; i < testdata.Length; i++)
+                {
+                    testdata[i] = 0;
+                }
+
                 double fftMax = 0.0;
                 double max_fre = 62.0;
                 double max_fre_temp = 62.0;
@@ -461,7 +480,7 @@ namespace accelview_classes
                     int answer = knn.Compute(testdata); // answer will be 2.
                     //結果表示
                     recognitionlabel.Text ="class " + answer.ToString();
-                    changebuttonColor(answer);
+                    ChangebuttonColor(answer);
                 }
                 else if (comboBox1.SelectedItem.ToString() == "C4.5")
                 {
@@ -504,7 +523,7 @@ namespace accelview_classes
                     int[] answer = test.Apply(tree.Compute);
 
                     recognitionlabel.Text ="class " + answer[0].ToString();
-                    changebuttonColor(answer[0]);
+                    ChangebuttonColor(answer[0]);
 
                 }
                 else if (comboBox1.SelectedItem.ToString() == "SVM")
@@ -517,7 +536,7 @@ namespace accelview_classes
                     int answer = machine.Compute(new double[] { testdata[0], testdata[1], testdata[2], testdata[3], testdata[4], testdata[5], testdata[6], testdata[7], testdata[8], testdata[9], testdata[10], testdata[11], testdata[12], testdata[13], testdata[14], testdata[15], testdata[16], testdata[17], testdata[18], testdata[19], testdata[20], testdata[21], testdata[22] });
 
                     recognitionlabel.Text = "class " + answer.ToString();
-                    changebuttonColor(answer);
+                    ChangebuttonColor(answer);
                 }
                 else if (comboBox1.SelectedItem.ToString() == "DeepLearning")
                 {
@@ -540,15 +559,15 @@ namespace accelview_classes
 
                     if (answer[0] == -1 && answer[1] == -1)
                     {
-                        int imax = 0; changebuttonColor(imax); recognitionlabel.Text = imax.ToString();
+                        int imax = 0; ChangebuttonColor(imax); recognitionlabel.Text = imax.ToString();
                     }
                     else if (answer[0] == 1 && answer[1] == 1)
                     {
-                        int imax = 1; changebuttonColor(imax); recognitionlabel.Text = imax.ToString();
+                        int imax = 1; ChangebuttonColor(imax); recognitionlabel.Text = imax.ToString();
                     }
                     else if (answer[0] == 1 && answer[1] == -1)
                     {
-                        int imax = 2; changebuttonColor(imax); recognitionlabel.Text = imax.ToString();
+                        int imax = 2; ChangebuttonColor(imax); recognitionlabel.Text = imax.ToString();
                     }
                     else { recognitionlabel.Text = "error"; }
                 }
@@ -572,6 +591,7 @@ namespace accelview_classes
                     //(fftresult.GetData(i - 1).data.Abs + fftresult.GetData(i).data.Abs + fftresult.GetData(i + 1).data.Abs) / 3;
                 }
             }
+            //g.Dispose();
         }
 
         private int AdjustY_ftt(int y, int h, int ratio)
@@ -592,7 +612,7 @@ namespace accelview_classes
         private void ProcessingByReceive()
         {
             toolStripStatusLabel2.Text = "frequency = " + sensorData.CurrentFreq.ToString("####") + "Hz";
-            Debug.WriteLine(sensorData.CurrentFreq);
+            //Debug.WriteLine(sensorData.CurrentFreq);
 
             //double[] means = Statistics.Mean(sensorData.AllData);
             //textBoxDataView.Text += "加速度(x,y,z),角速度(x,y,z)=";
@@ -606,9 +626,9 @@ namespace accelview_classes
         #endregion
 
         #region 保存関係
-        private void buttonSave_Click(object sender, EventArgs e)
+        private void ButtonSave_Click(object sender, EventArgs e)
         {
-            calcFeature(featX);
+            CalcFeature(featX);
 
             alldata = new Data();
             int time = 0;
@@ -623,14 +643,26 @@ namespace accelview_classes
             int num = alldata.D[0].Time;
             //alldata.D[0].Time = 0;
 
-            //センサの読み取りをストップしてから保存処理
             if (serialPort1.IsOpen)
             {
-                //シリアルポートが開いているなら
-                //切断する処理を行う
-                serialPort1.Write("stop all \n");
-                //serialPort1.Close();
-                labelConnect.Text = "未接続";
+                if (comboBoxCOMS.Text != "COM5")
+                {
+                    labelConnect.Text = "Disconnected";
+                    //シリアルポートが開いているなら
+                    //切断する処理を行う
+                    serialPort1.Write("stop senb \n");
+                    //serialPort1.Close();
+
+                    //serialPort1.Close();
+                    //fft.FFT(AccelXYZ).Save();
+
+                }
+                else
+                {
+                    labelConnect.Text = "Disconnected";
+                    serialPort1.Write(stopmessage, 0, 1);
+                }
+
                 if (saveFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     Encoding enc = Encoding.GetEncoding("Shift_JIS");
@@ -643,12 +675,14 @@ namespace accelview_classes
                         }
                     }
                 }
+
             }
+            
         }
         #endregion
 
         #region 加速度センサコマンド
-        public void mystart()
+        public void Mystart()
         {
 
             labelConnect.Text = "接続中...";
@@ -678,7 +712,7 @@ namespace accelview_classes
         #endregion
 
         #region sensorData to FFT用のデータ配列 & FFT
-        private FFTresult myFFT()
+        private FFTresult MyFFT()
         {
             //SensorDatanの最後のデータを取得--------------------------------
             AccelData[] drawnData2 = sensorData.ExtractData(fft_num).ToArray();
@@ -736,7 +770,7 @@ namespace accelview_classes
 
         #region 学習と特徴量抽出
         //class 0 学習
-        private void learning0_Click(object sender, EventArgs e)
+        private void Learning0_Click(object sender, EventArgs e)
         {
             //learningbutton.FlatStyle = FlatStyle.Flat;
             //learning0.FlatAppearance.BorderColor = colors[3];
@@ -748,13 +782,13 @@ namespace accelview_classes
             }
 
             //double[] featX = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-            calcFeature(featX);
+            CalcFeature(featX);
             //inputs[0] = featX;
             //Debug.WriteLine(featX[0]);
             inputs[0] = new double[] { featX[0], featX[1], featX[2], featX[3], featX[4], featX[5], featX[6], featX[7], featX[8], featX[9], featX[10], featX[11], featX[12], featX[13], featX[14], featX[15], featX[16], featX[17], featX[18], featX[19], featX[20], featX[21], featX[22] };
         }
         //class 1 学習
-        private void learning1_Click(object sender, EventArgs e)
+        private void Learning1_Click(object sender, EventArgs e)
         {
             //learning1.FlatAppearance.BorderColor = colors[3]; 
             form2List[1].Clear();
@@ -765,12 +799,12 @@ namespace accelview_classes
             }
 
             //double[] featX = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-            calcFeature(featX);
+            CalcFeature(featX);
             //inputs[1] = featX;
             inputs[1] = new double[] { featX[0], featX[1], featX[2], featX[3], featX[4], featX[5], featX[6], featX[7], featX[8], featX[9], featX[10], featX[11], featX[12], featX[13], featX[14], featX[15], featX[16], featX[17], featX[18], featX[19], featX[20], featX[21], featX[22] };
         }
         //class 2 学習
-        private void learning2_Click(object sender, EventArgs e)
+        private void Learning2_Click(object sender, EventArgs e)
         {
             //learning2.FlatAppearance.BorderColor = colors[3]; 
             form2List[2].Clear();
@@ -781,17 +815,22 @@ namespace accelview_classes
             }
 
            // double[] featX = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-            calcFeature(featX);   
+            CalcFeature(featX);   
             //inputs[2] = featX;
             inputs[2] = new double[] { featX[0], featX[1], featX[2], featX[3], featX[4], featX[5], featX[6], featX[7], featX[8], featX[9], featX[10], featX[11], featX[12], featX[13], featX[14], featX[15], featX[16], featX[17], featX[18], featX[19], featX[20], featX[21], featX[22] };
             //Debug.WriteLine(featX[2]);
         }
         //特徴量抽出
-        private double[] calcFeature(double[] featX)
+        private double[] CalcFeature(double[] featX)
         {
             double fftMax = 0.0;
             double max_fre = 62.0;
             double max_fre_temp = 62.0;
+
+            for(int i = 0; i < featX.Length; i++)
+            {
+                featX[i] = 0;
+            }
 
             for (int i = 62; i < 512; i++)
             {
@@ -897,7 +936,7 @@ namespace accelview_classes
         #endregion
 
         #region 認識開始ボタンとDeepLearning用の学習
-        private void complete_Click(object sender, EventArgs e)
+        private void Complete_Click(object sender, EventArgs e)
         {
             flag = true;
             if (comboBox1.SelectedItem.ToString() == "DeepLearning")
@@ -930,19 +969,19 @@ namespace accelview_classes
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
             int ratio = (Form2Obj.trackBar2.Value - Form2Obj.trackBar2.Minimum) * (1 - 200) / (Form2Obj.trackBar2.Maximum - Form2Obj.trackBar2.Minimum) + 200;
-            this.form2_DrawGraph(e.Graphics, ratio, 0, form2List[0]);
+            this.Form2_DrawGraph(e.Graphics, ratio, 0, form2List[0]);
         }
         private void pictureBox3_Paint(object sender, PaintEventArgs e)
         {
             int ratio = (Form2Obj.trackBar2.Value - Form2Obj.trackBar2.Minimum) * (1 - 200) / (Form2Obj.trackBar2.Maximum - Form2Obj.trackBar2.Minimum) + 200;
-            this.form2_DrawGraph(e.Graphics, ratio, 1, form2List[1]);
+            this.Form2_DrawGraph(e.Graphics, ratio, 1, form2List[1]);
         }
         private void pictureBox4_Paint(object sender, PaintEventArgs e)
         {
             int ratio = (Form2Obj.trackBar2.Value - Form2Obj.trackBar2.Minimum) * (1 - 200) / (Form2Obj.trackBar2.Maximum - Form2Obj.trackBar2.Minimum) + 200;
-            this.form2_DrawGraph(e.Graphics, ratio, 2, form2List[2]);
+            this.Form2_DrawGraph(e.Graphics, ratio, 2, form2List[2]);
         }
-        private void form2_DrawGraph(Graphics g, int ratio, int k, List<double> list)
+        private void Form2_DrawGraph(Graphics g, int ratio, int k, List<double> list)
         {
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             Pen Fpen = new Pen(new SolidBrush(colors[5]), 2);
@@ -975,9 +1014,9 @@ namespace accelview_classes
         private void pictureBox_Paint(object sender, PaintEventArgs e)
         {
             int ratio = (Form3Obj.trackBar.Value - Form3Obj.trackBar.Minimum) * (1 - 200) / (Form3Obj.trackBar.Maximum - Form3Obj.trackBar.Minimum) + 200;
-            this.form3_DrawGraph(e.Graphics, ratio, 2, form2List);
+            this.Form3_DrawGraph(e.Graphics, ratio, 2, form2List);
         }
-        private void form3_DrawGraph(Graphics g, int ratio, int k, List<List<double>> list)
+        private void Form3_DrawGraph(Graphics g, int ratio, int k, List<List<double>> list)
         {
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
             Pen[] pen = new Pen[3]; 
@@ -1001,7 +1040,7 @@ namespace accelview_classes
 
         #endregion
 
-        public void changebuttonColor(int answer)
+        public void ChangebuttonColor(int answer)
         {
             learning0.ForeColor = Color.White;
             learning1.ForeColor = Color.White;
@@ -1028,11 +1067,11 @@ namespace accelview_classes
 
         private void OnElapsed_TimersTimer(object sender, ElapsedEventArgs e)
         {
-            this.myFFT();
+            this.MyFFT();
             pictureBox2.Invalidate();
         }
 
-        private void saveF_Click(object sender, EventArgs e)
+        private void SaveF_Click(object sender, EventArgs e)
         {
             this.saveFileDialog1.Filter = "csv(*.csv)|*.csv";
             DialogResult dr1 = saveFileDialog1.ShowDialog();

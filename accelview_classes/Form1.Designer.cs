@@ -114,7 +114,7 @@
             this.buttonStop.TabIndex = 1;
             this.buttonStop.Text = "Stop";
             this.buttonStop.UseVisualStyleBackColor = false;
-            this.buttonStop.Click += new System.EventHandler(this.buttonStop_Click);
+            this.buttonStop.Click += new System.EventHandler(this.ButtonStop_Click);
             // 
             // buttonSave
             // 
@@ -129,7 +129,7 @@
             this.buttonSave.TabIndex = 2;
             this.buttonSave.Text = "Save";
             this.buttonSave.UseVisualStyleBackColor = false;
-            this.buttonSave.Click += new System.EventHandler(this.buttonSave_Click);
+            this.buttonSave.Click += new System.EventHandler(this.ButtonSave_Click);
             // 
             // labelConnect
             // 
@@ -145,7 +145,7 @@
             // 
             // serialPort1
             // 
-            this.serialPort1.BaudRate = 150000;
+            this.serialPort1.BaudRate = 115200;
             this.serialPort1.DtrEnable = true;
             this.serialPort1.PortName = "COM4";
             this.serialPort1.ReadBufferSize = 8192;
@@ -210,7 +210,7 @@
             this.learning0.TabIndex = 39;
             this.learning0.Text = "Class 0";
             this.learning0.UseVisualStyleBackColor = false;
-            this.learning0.Click += new System.EventHandler(this.learning0_Click);
+            this.learning0.Click += new System.EventHandler(this.Learning0_Click);
             // 
             // learning2
             // 
@@ -223,7 +223,7 @@
             this.learning2.TabIndex = 41;
             this.learning2.Text = "Class 2";
             this.learning2.UseVisualStyleBackColor = false;
-            this.learning2.Click += new System.EventHandler(this.learning2_Click);
+            this.learning2.Click += new System.EventHandler(this.Learning2_Click);
             // 
             // complete
             // 
@@ -236,7 +236,7 @@
             this.complete.TabIndex = 42;
             this.complete.Text = "Recognition";
             this.complete.UseVisualStyleBackColor = false;
-            this.complete.Click += new System.EventHandler(this.complete_Click);
+            this.complete.Click += new System.EventHandler(this.Complete_Click);
             // 
             // recognitionlabel
             // 
@@ -271,7 +271,7 @@
             this.learning1.TabIndex = 40;
             this.learning1.Text = "Class 1";
             this.learning1.UseVisualStyleBackColor = false;
-            this.learning1.Click += new System.EventHandler(this.learning1_Click);
+            this.learning1.Click += new System.EventHandler(this.Learning1_Click);
             // 
             // button1
             // 
@@ -319,7 +319,7 @@
             this.saveF.TabIndex = 49;
             this.saveF.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.saveF.UseVisualStyleBackColor = false;
-            this.saveF.Click += new System.EventHandler(this.saveF_Click);
+            this.saveF.Click += new System.EventHandler(this.SaveF_Click);
             // 
             // Form1
             // 
